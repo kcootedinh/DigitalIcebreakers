@@ -35,6 +35,9 @@ export default () => {
                     <Button color='primary' size='lg' onClick={() => history.push('/create-lobby')}>
                         Present
                     </Button>
+                    <Button color='primary' size='lg' onClick={() => history.push('/join-lobby')}>
+                        Join
+                    </Button>
                 </div>
                 <p>Feature requests, suggestions, bugs &amp; feedback to <a href='https://github.com/staff0rd/digitalicebreakers/issues'>backlog</a> or <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
                 <h2>How it works</h2>
