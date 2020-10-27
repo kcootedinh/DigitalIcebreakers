@@ -42,6 +42,7 @@ namespace DigitalIcebreakers
 
             services.AddScoped<ClientHelper>();
             services.AddScoped<LobbyManager>();
+            services.AddSingleton<LobbyIdService>();
 
             services.AddHostedService<TimeoutLobbyService>();
         }
