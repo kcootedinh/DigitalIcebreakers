@@ -12,14 +12,17 @@ namespace DigitalIcebreakers.Test
     [TestClass]
     public class Given_a_player_exists_in_a_lobby_When_joining_another_lobby
     {
-        Guid _lobbyIdNew = Guid.NewGuid();
-        Guid _lobbyIdOld = Guid.NewGuid();
+        string _lobbyIdNew;
+        string _lobbyIdOld;
 
         List<Lobby> _lobbys;
 
         [TestInitialize]
         public async Task Setup()
         {
+            var lobbyIds = new LobbyIdService();
+            _lobbyIdNew = lobbyIds.GetCode();
+            _lobbyIdOld = lobbyIds.GetCode();
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
                 new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true }, new Player { Id = playerId } } },

@@ -36,7 +36,7 @@ namespace DigitalIcebreakers.Hubs
             return _lobbys.GetLobbyByConnectionId(ConnectionId).Players.Count(p => !p.IsAdmin && p.IsConnected);
         }
 
-        public async Task CreateLobby(Guid id, string name, User user)
+        public async Task CreateLobby(string id, string name, User user)
         {
             _lobbys.GetByAdminId(user.Id)
                 .ToList()
@@ -70,12 +70,12 @@ namespace DigitalIcebreakers.Hubs
             return Context.Features.Get<IHttpTransportFeature>()?.TransportType;
         }
 
-        public async Task Connect(User user, Guid? lobbyId = null)
+        public async Task Connect(User user, string lobbyId = null)
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
 
-            if (lobbyId.HasValue && lobby != null && lobbyId.Value != lobby.Id)
+            if (lobbyId != null && lobby != null && lobbyId != lobby.Id)
                 await LeaveLobby(player, lobby);
             else
             {
@@ -119,7 +119,8 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && player.IsAdmin)
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has {action} {game}", lobby.Name, lobby.Number, lobby.PlayerCount, "started", name);
-                lobby.CurrentGame = GetGame(name);
+                var game = GetGame(name);
+                lobby.NewGame(game);
                 await _send.NewGame(lobby, name);
                 await lobby.CurrentGame.Start(ConnectionId);
             }
@@ -152,12 +153,12 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                lobby.CurrentGame = null;
+                lobby.EndGame();
                 await _send.EndGame(lobby);
             }
         }
 
-        public async Task ConnectToLobby(User user, Guid lobbyId)
+        public async Task ConnectToLobby(User user, string lobbyId)
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var existingLobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
